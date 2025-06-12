@@ -1,3 +1,20 @@
+.welcome {
+  font-size: 20px;
+  text-wrap-style: balance;
+  line-height: 32px;
+  text-align: center;
+  color: var(--foreground);
+}
+
+.showLessButton {
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .page {
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
@@ -6,14 +23,15 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
 
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-items: center;
-  min-height: 100svh;
+  min-height: 100vh;
+  position: relative;
   padding: 80px;
   gap: 64px;
-  font-family: var(--font-geist-sans);
+  /* font-family: var(--font-geist-sans); */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -126,10 +144,40 @@ a.secondary {
   }
 }
 
+/* .knowMoreButton {
+  position: absolute;
+  top: calc(50% + 100px);
+  left: 50%;
+  transform: translate(-50%, 0);
+} */
+
 @media (max-width: 600px) {
+  .knowMoreButton {
+    position: absolute;
+    top: calc(50% + 150px);
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .knowLessButton {
+    position: relative;
+    text-align: center;
+  }
+
+  .welcome {
+    font-size: 20px;
+    line-height: normal;
+    text-wrap-style: stable;
+    line-height: 32px;
+
+    text-align: center;
+    color: var(--foreground);
+  }
+
   .page {
     padding: 32px;
     padding-bottom: 80px;
+    min-height: 100dvh;
   }
 
   .main {

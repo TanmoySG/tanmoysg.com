@@ -1,0 +1,18 @@
+.dottedUnderline {
+    text-decoration: underline wavy;
+    font-size: 18px;
+    font-weight: 500;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 2px;
+}
+
+.dottedUnderline:hover {
+    cursor: pointer;
+    text-decoration: underline wavy rgb(149, 0, 15);
+    text-decoration-thickness: 2.5px;
+}
+
+.dottedUnderline:active {
+    text-decoration: underline wavy rgb(96, 0, 10);
+    text-decoration-thickness: 2.5px;
+}
