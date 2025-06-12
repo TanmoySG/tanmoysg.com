@@ -1,0 +1,66 @@
+.projectsCarousel {
+    width: 100%;
+    max-width: 600ox;
+    margin: 0 auto 40px auto;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: center;
+    position: relative;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    /* color: #90cdf4; */
+    margin-bottom: 12px;
+    transition: color 0.2s;
+}
+
+.carousel-text {
+    font-size: 1.25rem;
+    color: #f0f0f0;
+    min-height: 40px;
+    transition: opacity 0.4s;
+}
+
+.carousel-dots {
+    margin-top: 18px;
+}
+
+.dot,
+.dot-active {
+    font-size: 2rem;
+    margin: 0 6px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+    user-select: none;
+}
+
+.dot-active {
+    color: #90cdf4;
+}
+
+.carouselNavBtn {
+    background: none;
+    border: none;
+    color: #90cdf4;
+    padding: 4px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+    font-size: 1.5rem;
+}
+
+.carouselNavBtn:hover,
+.carouselNavBtn:focus {
+    color: #f0f0f0;
+}

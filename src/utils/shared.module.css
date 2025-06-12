@@ -1,0 +1,10 @@
+.magnify {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.magnify:hover,
+.magnify:focus {
+    transform: scale(1.15);
+    z-index: 2;
+}
