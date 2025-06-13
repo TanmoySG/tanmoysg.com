@@ -21,7 +21,7 @@ export const ToggleButton = ({
             type="button"
             target="_blank"
             rel="noopener noreferrer"
-            className={`${styles.dottedUnderline} ${shared_styles.magnify} ${className}`}
+            className={`${styles.dottedUnderline} ${className}`}
         >
             {buttonText}
         </a>

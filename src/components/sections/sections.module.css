@@ -13,3 +13,9 @@
     font-weight: 500;
     display: inline-block;
 }
+
+.socialLinks:hover, .socialLinks:focus, .socialLinks:active {
+    text-decoration: underline;
+    text-decoration-color: rgb(149, 0, 15);
+    text-underline-offset: 4px;
+}

@@ -4,44 +4,38 @@ import { Dot } from "@/utils/shared";
 
 const projectTexts = [
     {
-        title: "E-commerce Platform",
-        text: "Personal Portfolio Website - Built with Next.js, React, and Tailwind CSS.",
-        stack: "Next.js, React, Tailwind CSS",
+        title: "wunderDB",
+        text: "wunderDb is a JSON-based in-memory Data Store.",
+        stack: "GoLang, Docker, Shell Scripting, Python",
         links: [
-            { label: "GitHub", url: "https://github.com/yourusername/ecommerce-platform" }
+            { label: "GitHub", url: "https://github.com/TanmoySG/wunderDB" },
+            { label: "Demo", url: "https://wdb.tanmoysg.com/" }
         ]
     },
     {
-        title: "Social Media App",
-        text: "Real-time Chat App - Node.js, Socket.io, and MongoDB.",
-        stack: "Node.js, Socket.io, MongoDB",
+        title: "GoSteps - a Go library",
+        text: "GoSteps is a go library that helps in running functions as steps. The idea behind gosteps is to define set of functions as chain-of-steps and execute them in a sequential fashion.",
+        stack: "GoLang, Shell Scripting",
         links: [
-            { label: "GitHub", url: "https://github.com/yourusername/social-media-app" },
-            { label: "Demo", url: "https://yourusername.github.io/social-media-app" }
+            { label: "GitHub", url: "https://github.com/TanmoySG/go-steps" },
         ]
     },
     {
-        title: "Data Engineering Pipeline",
-        text: "Data Engineering Pipeline - Kafka, Python, and Google Cloud Platform.",
-        stack: "Kafka, Python, Google Cloud Platform",
+        title: "hyENC3 - Advanced Data Security",
+        text: "Advanced-Data Security using multiple cryptographic algorithms over multiple layers and secured key sharing.",
+        stack: "Python, Flask, JavaScript, HTML, CSS",
         links: [
-            { label: "GitHub", url: "https://github.com/yourusername/data-engineering-pipeline" }
+            { label: "Research Paper", url: "https://www.irjet.net/archives/V8/i8/IRJET-V8I8428.pdf" },
+            { label: "GitHub", url: "https://github.com/TanmoySG/hyENC3" }
         ]
     },
     {
-        title: "Kubernetes Deployment Automation",
-        text: "Kubernetes Deployment Automation - Docker, K8s, and GitHub Actions.",
-        stack: "Docker, K8s, GitHub Actions",
+        title: "Bhavcopy Scrapper",
+        text: "A simple web scrapper to fetch the daily bhavcopy from NSE and store it in a local file.",
+        stack: "Python, HTML",
         links: [
-            { label: "GitHub", url: "https://github.com/yourusername/kubernetes-deployment-automation" }
-        ]
-    },
-    {
-        title: "Cryptography Playground",
-        text: "Cryptography Playground - Interactive web app for learning cryptography.",
-        stack: "JavaScript, HTML, CSS",
-        links: [
-            { label: "GitHub", url: "https://github.com/yourusername/cryptography-playground" }
+            { label: "GitHub", url: "https://github.com/TanmoySG/bhavcopy-scraper" },
+            { label: "Demo", url: "https://utils.tanmoysg.com/bhavcopy/" }
         ]
     }
 ];
@@ -94,14 +88,14 @@ export default function ProjectsCarousel() {
                         </div>
                         <div className={styles["carousel-links"]} style={{ marginTop: '10px', fontSize: '1.15rem' }}>
                             {projectTexts[index].links.map((link, i) => (
-                                <>
-                                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className={styles["carousel-link"]}>
+                                <span key={i}>
+                                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className={`${styles["carousel-link"]} ${styles["carouselLinks"]}`}>
                                         {link.label}
                                     </a>
                                     {i !== projectTexts[index].links.length - 1 && (
                                         <Dot />
                                     )}
-                                </>
+                                </span>
                             ))}
                         </div>
                     </div>
