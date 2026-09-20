@@ -1,42 +1,17 @@
 import { fonts } from "@/utils/fonts";
-import { Dot, Slash } from "@/utils/shared";
+import { Slash } from "@/utils/shared";
+import styles from "./sections.module.css";
+import type { EducationItem } from "./types";
 
-type EducationData = {
-    degree: string;
-    specialization?: string;
-    institution: string;
-    duration: string;
-};
-
-export default function Education() {
-    const educationData: EducationData[] = [
-        {
-            degree: "Bachelor of Technology",
-            specialization: "Computer Science and Engineering",
-            institution: "SRM Institute of Science and Technology",
-            duration: "2017 - 2021"
-        },
-        {
-            degree: "AISSCE (CBSE/Class 12)",
-            specialization: "Science",
-            institution: "South Point School, Guwahati",
-            duration: "2017"
-        },
-        {
-            degree: "AISSE (CBSE/Class 10)",
-            institution: "South Point School, Guwahati",
-            duration: "2015"
-        }
-    ];
-
+export default function Education({ data }: { data: EducationItem[] }) {
     return (
-        <div>
-            <h3 style={{ fontSize: "2rem", marginBottom: "20px" }}>Education</h3>
+        <div className={styles.aboutSection}>
+            <h3 className={styles.aboutTitle}>Education</h3>
 
-            <div className={fonts.taviraj.className} style={{ textAlign: "center", fontSize: "1rem", marginTop: "10px", marginBottom: "20px" }}>
-                <ul style={{ listStyleType: "none" }}>
+            <div className={`${fonts.taviraj.className} ${styles.aboutContent}`} style={{ fontSize: "1rem" }}>
+                <ul className={styles.aboutList}>
                     {
-                        educationData.map((edu, index) => (
+                        data.map((edu, index) => (
                             <li key={index} style={{ marginBottom: "20px" }}>
                                 <span style={{ fontSize: "1.2rem" }}>
                                     <b>{edu.degree}</b> {edu.specialization && <span style={{ /*fontStyle: "italic" */ }}>in {edu.specialization}</span>}

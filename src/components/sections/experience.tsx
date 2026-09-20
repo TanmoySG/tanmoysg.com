@@ -1,31 +1,16 @@
 import { fonts } from "@/utils/fonts";
 import styles from "./sections.module.css";
-import { Dot, Slash } from "@/utils/shared";
+import { Slash } from "@/utils/shared";
+import type { ExperienceItem } from "./types";
 
-type ExperienceData = {
-    title: string;
-    company: string;
-    duration: string;
-    description: string;
-};
-
-export default function Experience() {
-    const experienceData: ExperienceData[] = [
-        {
-            title: "Senior Software Engineer",
-            company: "Optum",
-            duration: "June 2022 - Present",
-            description: "Developed and maintained a data platform for healthcare analytics. Implemented access provisioning systems to ensure secure data access. Collaborated with cross-functional teams to deliver high-quality software solutions."
-        },
-    ];
-
+export default function Experience({ data }: { data: ExperienceItem[] }) {
     return (
-        <div>
-            <h3 style={{ fontSize: "2rem", marginBottom: "20px" }}>Experience</h3>
+        <div className={styles.aboutSection}>
+            <h3 className={styles.aboutTitle}>Experience</h3>
 
-            <div className={fonts.taviraj.className} style={{ textAlign: "left", fontSize: "1rem", marginTop: "10px", marginBottom: "20px" }}>
-                <ul style={{ listStyleType: "none" }}>
-                    {experienceData.map((exp, index) => (
+            <div className={`${fonts.taviraj.className} ${styles.aboutContent}`} style={{ fontSize: "1rem" }}>
+                <ul className={styles.aboutList}>
+                    {data.map((exp, index) => (
                         <li key={index} style={{ marginBottom: "20px", alignItems: "center", textAlign: "center" }}>
                             <span style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
                                 {exp.title}
