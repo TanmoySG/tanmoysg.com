@@ -10,7 +10,7 @@ import type { AboutData } from "./sections/types";
 
 const sourceUrl = "https://raw.githubusercontent.com/TanmoySG/TanmoySG/master/source/source.json";
 const sourceCacheKey = "tanmoysg-about-source";
-const ABOUT_CACHE_SECONDS = 1;
+const ABOUT_CACHE_SECONDS = 600; // in sec
 const MINIMUM_LOADER_MS = 1000;
 const sourceCacheTtl = ABOUT_CACHE_SECONDS * 1000;
 
