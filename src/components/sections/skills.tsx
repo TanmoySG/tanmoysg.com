@@ -1,22 +1,12 @@
 import { fonts } from "@/utils/fonts";
+import styles from "./sections.module.css";
 
-export default function Skills() {
+export default function Skills({ data }: { data: string[] }) {
     return (
-        <div>
-            <h3 style={{ fontSize: "2rem", marginBottom: "20px" }}>Skills</h3>
-            <div className={fonts.taviraj.className} style={{ fontSize: "1.2rem", marginTop: "10px", marginBottom: "20px" }}>
-                {[
-                    "NodeJS",
-                    "Javascript",
-                    "Typescript",
-                    "C/C++",
-                    "Golang", "Python", "JavaScript", "Java",
-                    "React.js", "GraphQL", "Kubernetes",
-                    "Docker", "Azure", "Kafka", "Snowflake",
-                    "GitHub Actions", "Shell Scripting",
-                    "Google Cloud Platform", "SQL",
-                    "Cryptography"
-                ].join(" · ")}
+        <div className={styles.aboutSection}>
+            <h3 className={styles.aboutTitle}>Skills</h3>
+            <div className={`${fonts.taviraj.className} ${styles.aboutContent}`} style={{ fontSize: "1.2rem" }}>
+                {data.join(" · ")}
             </div>
         </div>
     );

@@ -1,3 +1,212 @@
+.about {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.aboutLoader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aboutLoaderExiting {
+    animation: coffeeLiftAway 420ms ease-in forwards;
+}
+
+.aboutLoaderExiting .coffeeCup {
+    animation: coffeeBrewComplete 420ms ease-in forwards;
+}
+
+.aboutLoaderExiting .coffeeSurface {
+    animation: coffeeFillComplete 420ms ease-in forwards;
+}
+
+.aboutContentLoaded {
+    animation: aboutContentReveal 360ms ease-out both;
+}
+
+@keyframes aboutContentReveal {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes coffeeLiftAway {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0.15;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes coffeeBrewComplete {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes coffeeFillComplete {
+    from {
+        transform: scaleX(0.9);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+.coffeeLoader {
+    position: relative;
+    display: block;
+    width: 100px;
+    height: 100px;
+}
+
+.coffeeCup {
+    position: absolute;
+    right: 18px;
+    bottom: 22px;
+    z-index: 1;
+    width: 58px;
+    height: 42px;
+    border: 3px solid var(--foreground);
+    border-radius: 5px 5px 18px 18px;
+    background: var(--background);
+    overflow: visible;
+}
+
+.coffeeSurface {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    height: 10px;
+    border-radius: 50%;
+    background: #95000f;
+    animation: coffeeBrew 1.2s ease-in-out infinite alternate;
+}
+
+.coffeeHandle {
+    position: absolute;
+    top: 7px;
+    right: -18px;
+    width: 18px;
+    height: 20px;
+    border: 3px solid var(--foreground);
+    border-left: 0;
+    border-radius: 0 14px 14px 0;
+}
+
+.coffeeSaucer {
+    position: absolute;
+    right: 8px;
+    bottom: 14px;
+    width: 78px;
+    height: 8px;
+    border: 3px solid var(--foreground);
+    border-radius: 50%;
+    background: var(--background);
+}
+
+.coffeeSteam,
+.coffeeSteam::before,
+.coffeeSteam::after {
+    position: absolute;
+    bottom: 63px;
+    width: 3px;
+    height: 24px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--foreground) 55%, transparent);
+    content: "";
+    animation: coffeeSteam 1.8s ease-in-out infinite;
+}
+
+.coffeeSteam {
+    right: 48px;
+}
+
+.coffeeSteam::before {
+    right: 14px;
+    bottom: -2px;
+    animation-delay: 300ms;
+}
+
+.coffeeSteam::after {
+    right: -14px;
+    bottom: 2px;
+    animation-delay: 600ms;
+}
+
+@keyframes coffeeBrew {
+    from {
+        transform: scaleX(0.75);
+        opacity: 0.65;
+    }
+    to {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+@keyframes coffeeSteam {
+    0%,
+    100% {
+        transform: translateY(4px) scaleY(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: translateY(-5px) scaleY(1);
+        opacity: 0.7;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .coffeeSurface,
+    .coffeeSteam,
+    .coffeeSteam::before,
+    .coffeeSteam::after {
+        animation: none;
+    }
+}
+
+.aboutSection {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.aboutTitle {
+    margin: 0 0 20px;
+    font-size: 2rem;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.aboutContent {
+    width: 100%;
+    margin: 10px 0 20px;
+    text-align: center;
+}
+
+.aboutList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
 .para {
     font-size: 1.2rem;
 }
@@ -12,6 +221,62 @@
 .socialLinks {
     font-weight: 500;
     display: inline-block;
+}
+
+.pageButton {
+    border: 0;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+.commandForm {
+    display: block;
+    margin: 18px auto 0;
+    text-align: center;
+    animation: commandReveal 220ms ease-out both;
+}
+
+.commandFormClosing {
+    animation: commandHide 180ms ease-in both;
+}
+
+.commandInput {
+    width: 150px;
+    border: 0;
+    border-bottom: 1px dashed rgba(128, 128, 128, 0.65);
+    outline: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+}
+
+.commandInput:focus {
+    border-bottom-color: #95000f;
+}
+
+@keyframes commandReveal {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes commandHide {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
 }
 
 .socialLinks:hover, .socialLinks:focus, .socialLinks:active {
