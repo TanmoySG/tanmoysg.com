@@ -1,74 +1,88 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import styles from "./page.module.css";
+import BrunchPreferences from "@/components/brunch-preferences";
+import { getAuthenticatedInvitee } from "@/lib/brunch-access";
+import { getBrunchContent } from "@/lib/github-content";
 
-const menu = [
-  "Something warm from the oven",
-  "Seasonal fruit and yoghurt",
-  "Fresh coffee, tea, and juice",
-];
+export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Brunch at Tanmoy's",
-  description: "A small brunch at Tanmoy's.",
-};
+export const metadata = { title: "Brunch at Tanmoy's" };
 
-export default function BrunchPage() {
+export default async function BrunchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; pin?: string; code?: string }>;
+}) {
+  const { error, pin, code } = await searchParams;
+  const accessCode = pin ?? code;
+
+  if (accessCode) {
+    redirect(`/brunch/unlock?pin=${encodeURIComponent(accessCode)}`);
+  }
+
+  const invitee = await getAuthenticatedInvitee();
+  if (!invitee) {
+    return (
+      <main className={styles.page}>
+        <section className={styles.card}>
+          <p className={styles.label}>private invitation</p>
+          <h1>brunch <span>at</span><br />tanmoy&apos;s</h1>
+          <p className={styles.copy}>Enter the four digit code to continue.</p>
+          <form className={styles.unlockForm} action="/brunch/unlock" method="post">
+            <label htmlFor="brunch-pin">access code</label>
+            <input
+              id="brunch-pin"
+              name="pin"
+              type="password"
+              inputMode="numeric"
+              pattern="[0-9]{4}"
+              minLength={4}
+              maxLength={4}
+              autoComplete="one-time-code"
+              required
+              aria-describedby={error === "invalid-pin" ? "invalid-pin" : undefined}
+            />
+            {error === "invalid-pin" && (
+              <p id="invalid-pin" className={styles.unlockError}>That code is not valid.</p>
+            )}
+            <button className={styles.submitButton} type="submit">open invitation <span aria-hidden="true">↗</span></button>
+          </form>
+        </section>
+      </main>
+    );
+  }
+
+  const content = await getBrunchContent();
+
   return (
-    <main className={styles.page}>
-      <nav className={styles.nav} aria-label="Main navigation">
-        <Link className={styles.wordmark} href="/">
-          tanmoy&apos;s
-        </Link>
-        <Link className={styles.homeLink} href="/">
-          back home
-        </Link>
-      </nav>
-
-      <section className={styles.invitation}>
-        <p className={styles.kicker}>an invitation</p>
-        <h1>Brunch<br /><em>at Tanmoy&apos;s</em></h1>
-        <p className={styles.intro}>
-          I&apos;m hosting a small brunch and would love for you to join me.
-          Nothing formal — just good food, slow conversation, and a relaxed
-          Sunday morning.
+    <main className={`${styles.page} ${styles.invitationPage}`}>
+      <section className={styles.card}>
+        <p className={styles.label}>
+          {content.invitation.label} · <span className={styles.inviteeName}>{invitee.name}</span>
         </p>
-
+        <h1>
+          {content.invitation.title.before}{" "}
+          <span>{content.invitation.title.connector}</span>
+          <br />
+          {content.invitation.title.after}
+        </h1>
+        <p className={styles.copy}>{content.invitation.description}</p>
+        <div className={styles.line} />
         <div className={styles.details}>
-          <div>
-            <span className={styles.label}>when</span>
-            <p>Sunday, 10:30 am</p>
-          </div>
-          <div>
-            <span className={styles.label}>where</span>
-            <p>At my place, Kolkata</p>
-          </div>
+          <div><span>{content.event.when.label}</span><p>{content.event.when.value}</p></div>
+          <div><span>{content.event.where.label}</span><p>{content.event.where.value}</p></div>
         </div>
-
-        <a className={styles.rsvp} href="mailto:hello@tanmoysg.com?subject=Brunch%20at%20Tanmoy%27s">
-          I&apos;ll be there <span aria-hidden="true">↗</span>
-        </a>
+        <div className={styles.menu}>
+          <span>{content.menu.label}</span>
+          <p>{content.menu.description}</p>
+        </div>
+        <BrunchPreferences
+          content={content.preferences}
+          response={content.response}
+          className={styles.preferences}
+        />
       </section>
-
-      <section className={styles.menu} aria-labelledby="menu-title">
-        <div>
-          <p className={styles.kicker}>a small menu</p>
-          <h2 id="menu-title">A few things<br /><em>to share.</em></h2>
-        </div>
-        <div className={styles.menuList}>
-          {menu.map((item, index) => (
-            <p key={item}>
-              <span>0{index + 1}</span>
-              {item}
-            </p>
-          ))}
-          <small>Menu may change a little with the morning.</small>
-        </div>
-      </section>
-
-      <footer className={styles.footer}>
-        <span>come as you are</span>
-        <span>tanmoy&apos;s · 2026</span>
-      </footer>
+      <footer>{content.footer}</footer>
     </main>
   );
 }

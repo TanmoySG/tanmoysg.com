@@ -1,0 +1,259 @@
+.page {
+  min-height: 100vh;
+  padding: 8vh 7vw;
+  color: #303c38;
+  background: #edf1eb;
+  font-family: "DM Sans", sans-serif;
+}
+
+.card {
+  max-width: 900px;
+  margin: auto;
+  padding: 52px 7vw;
+  background: #f7f4ed;
+  border: 1px solid #d9ded6;
+  box-shadow: 8px 9px 0 rgba(48, 60, 56, .08);
+}
+
+.label {
+  margin: 0 0 18px;
+  color: #bf725d;
+  font: 500 12px "Space Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.card h1 {
+  margin: 0;
+  font-size: clamp(42px, 7vw, 82px);
+  font-weight: 500;
+  letter-spacing: -.08em;
+  line-height: .9;
+}
+
+.card h1 span {
+  color: #bf725d;
+  font: italic .45em "Space Mono", monospace;
+}
+
+.loginForm {
+  display: grid;
+  max-width: 320px;
+  gap: 12px;
+  margin-top: 35px;
+  font: 12px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.loginForm input {
+  padding: 12px;
+  background: transparent;
+  border: 1px solid rgba(48, 60, 56, .35);
+  font: 18px "DM Mono", monospace;
+}
+
+.button {
+  padding: 12px 16px;
+  color: #f7f4ed;
+  background: #303c38;
+  border: 0;
+  font: 12px "Space Mono", monospace;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.error {
+  margin: 0;
+  color: #bf725d;
+  font-family: "DM Sans", sans-serif;
+  text-transform: none;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.header a {
+  color: #bf725d;
+  font: 12px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bulkActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 22px 0;
+  font: 11px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.bulkActions label,
+.issueSelect {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulkActions input,
+.issueSelect input {
+  accent-color: #bf725d;
+}
+
+.bulkButton {
+  padding: 8px 11px;
+  color: #f7f4ed;
+  background: #303c38;
+  border: 0;
+  font: 11px "Space Mono", monospace;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.bulkButton:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+.refreshButton {
+  padding: 8px 11px;
+  color: #303c38;
+  background: transparent;
+  border: 1px solid rgba(48, 60, 56, .3);
+  font: 11px "Space Mono", monospace;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.refreshButton:hover {
+  color: #f7f4ed;
+  background: #303c38;
+}
+
+.count {
+  margin: 36px 0 22px;
+  color: #69736e;
+  font: 12px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.disclaimer {
+  margin: 26px 0 0;
+  color: #69736e;
+  font: 13px "DM Sans", sans-serif;
+}
+
+.empty {
+  color: #69736e;
+}
+
+.issues {
+  display: grid;
+  gap: 14px;
+}
+
+.issues article {
+  padding: 20px;
+  border: 1px solid rgba(48, 60, 56, .18);
+}
+
+.issueHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.issueHeader a {
+  color: #303c38;
+  font-weight: 500;
+}
+
+.issueSelect a {
+  color: #303c38;
+  font-weight: 500;
+}
+
+.date,
+.meta {
+  color: #69736e;
+  font-size: 11px;
+}
+
+.issue p {
+  margin: 16px 0;
+  white-space: pre-wrap;
+}
+
+.issueFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.issueFooter form {
+  margin: 0;
+}
+
+.closeButton {
+  padding: 8px 11px;
+  color: #303c38;
+  background: transparent;
+  border: 1px solid rgba(48, 60, 56, .3);
+  font: 11px "Space Mono", monospace;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  color: #f7f4ed;
+  background: #bf725d;
+  border-color: #bf725d;
+}
+
+.closeButton:disabled {
+  color: #69736e;
+  background: rgba(48, 60, 56, .08);
+  border-color: rgba(48, 60, 56, .15);
+  cursor: default;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 30px 20px;
+  }
+
+  .card {
+    padding: 36px 26px;
+  }
+
+  .header,
+  .issueHeader {
+    display: block;
+  }
+
+  .headerActions,
+  .date {
+    display: inline-block;
+    margin-top: 16px;
+  }
+
+  .bulkActions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .issueFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
