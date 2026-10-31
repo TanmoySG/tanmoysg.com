@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500&family=Space+Mono&display=swap");
+
+.page {
+  --blue: #edf1eb;
+  --ink: #303c38;
+  --yellow: #e9dda2;
+  --paper: #f7f4ed;
+  --coral: #bf725d;
+  display: flow-root;
+  min-height: 100vh;
+  padding: 0 7vw;
+  color: var(--ink);
+  background: var(--blue);
+  font-family: "DM Sans", sans-serif;
+}
+
+.page nav {
+  display: flex;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: auto;
+  padding: 28px 0;
+  color: #7c8580;
+  font: 11px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.page nav a {
+  color: var(--ink);
+}
+
+.card {
+  position: relative;
+  max-width: 900px;
+  margin: 8vh auto 0;
+  padding: 62px 7vw 70px;
+  background: var(--paper);
+  border: 1px solid #d9ded6;
+  box-shadow: 8px 9px 0 rgba(48, 60, 56, .08);
+}
+
+.label {
+  margin: 0 0 25px;
+  color: var(--coral);
+  font: 500 15px "Space Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.inviteeName {
+  color: var(--coral);
+  font: inherit;
+  font-weight: 700;
+}
+
+.page h1 {
+  margin: 0;
+  font-size: clamp(54px, 8vw, 96px);
+  font-weight: 500;
+  letter-spacing: -.1em;
+  line-height: .8;
+}
+
+.page h1 span {
+  color: var(--coral);
+  font: italic .42em "Space Mono", monospace;
+}
+
+.copy {
+  max-width: 300px;
+  margin: 40px 0 34px;
+  color: #69736e;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.line {
+  height: 1px;
+  background: var(--ink);
+  opacity: .22;
+}
+
+.details {
+  display: flex;
+  gap: 50px;
+  margin: 19px 0 35px;
+  color: var(--ink);
+}
+
+.details div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.details span,
+.menu span {
+  color: var(--coral);
+  font: 500 12px "Space Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.details p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.menu {
+  margin: 50px 0 0;
+  padding: 0;
+  color: #69736e;
+}
+
+.menu span {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.menu p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.preferences {
+  margin-top: 32px;
+}
+
+.page footer {
+  max-width: 800px;
+  margin: 47px auto;
+  padding-bottom: 30px;
+  color: #7c8580;
+  font: 10px "Space Mono", monospace;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.unlockForm {
+  display: grid;
+  max-width: 260px;
+  gap: 10px;
+  margin-top: 35px;
+  color: var(--ink);
+  font: 12px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.unlockForm input {
+  width: 140px;
+  padding: 10px 12px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  font: 20px "DM Mono", monospace;
+  letter-spacing: .3em;
+}
+
+.unlockForm input:focus {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+
+.unlockError {
+  margin: 0;
+  color: var(--coral);
+  font: 12px "DM Sans", sans-serif;
+  text-transform: none;
+}
+
+.unlockForm .submitButton {
+  margin-top: 8px;
+}
+
+.invitationPage .card {
+  margin-top: 11vh;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 0 20px;
+  }
+
+  .page nav {
+    padding: 23px 0;
+  }
+
+  .card {
+    margin-top: 8vh;
+    padding: 54px 28px 48px;
+    box-shadow: 4px 5px 0 rgba(48, 60, 56, .07);
+  }
+
+  .details {
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+
+  .menu {
+    margin-top: 43px;
+  }
+
+  .preferences {
+    margin-top: 25px;
+  }
+
+  .page footer {
+    margin-top: 35px;
+  }
+}
