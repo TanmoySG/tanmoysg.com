@@ -47,12 +47,20 @@
 }
 
 .headerButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 11px;
   color: #e8eee9;
   border: 1px solid rgba(205, 220, 210, .3);
   font: 11px "Space Mono", monospace;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.headerButton svg {
+  width: 1em;
+  height: 1em;
 }
 
 .headerButton:hover {

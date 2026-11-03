@@ -1,3 +1,5 @@
+import { faCheckCircle, faCircleXmark, faListAlt } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAuthenticatedQuizUser } from "@/lib/quiz-access";
 import { finalizedQuizLabel, getQuizIssues } from "@/lib/quiz-issues";
 import { getQuizRoundsContent } from "@/lib/github-content";
@@ -34,9 +36,15 @@ export default async function FinalizePage() {
             <h1 className={styles.title}>finalize <span className={styles.titleAccent}>questions</span></h1>
           </div>
           <div className={styles.headerActions}>
-            <a className={styles.headerButton} href="/bw">questions</a>
-            <a className={styles.headerButton} href="/bw/finalized">finalized</a>
-            <a className={styles.headerButton} href="/bw/logout">log out</a>
+            <a className={styles.headerButton} href="/bw">
+              <FontAwesomeIcon icon={faListAlt} aria-hidden="true" /> questions
+            </a>
+            <a className={styles.headerButton} href="/bw/finalized">
+              <FontAwesomeIcon icon={faCheckCircle} aria-hidden="true" /> finalized
+            </a>
+            <a className={styles.headerButton} href="/bw/logout">
+              <FontAwesomeIcon icon={faCircleXmark} aria-hidden="true" /> log out
+            </a>
           </div>
         </div>
         <FinalizeList issues={issues} rounds={roundsResult.rounds} />
