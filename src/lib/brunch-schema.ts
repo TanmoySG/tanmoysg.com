@@ -5,15 +5,29 @@ export const preferenceOptionSchema = z.object({
   label: z.string().min(1),
 });
 
-const preferenceGroupSchema = z
-  .object({
-    label: z.string().min(1),
+const questionBaseSchema = z.object({
+  id: z.string().regex(/^[a-z][a-z0-9_-]*$/),
+  label: z.string().min(1),
+});
+
+export const preferenceQuestionSchema = z.discriminatedUnion("type", [
+  questionBaseSchema.extend({
+    type: z.literal("input"),
+    placeholder: z.string().optional(),
+  }),
+  questionBaseSchema.extend({
+    type: z.literal("multi-select"),
     options: z.array(preferenceOptionSchema).min(1),
-    default: z.string().min(1),
-  })
-  .refine((value) => value.options.some((option) => option.value === value.default), {
-    message: "The preference default must match an option",
-  });
+  }),
+  questionBaseSchema.extend({
+    type: z.literal("single-select"),
+    options: z.array(preferenceOptionSchema).min(1),
+  }),
+]);
+
+export const preferenceQuestionsSchema = z.object({
+  questions: z.array(preferenceQuestionSchema).min(1),
+});
 
 export const brunchSchema = z.object({
   metadata: z.object({
@@ -50,12 +64,6 @@ export const brunchSchema = z.object({
     description: z.string().min(1),
   }),
   preferences: z.object({
-    coffee: preferenceGroupSchema,
-    food: preferenceGroupSchema,
-    notes: z.object({
-      label: z.string().min(1),
-      placeholder: z.string().min(1),
-    }),
     submitLabel: z.string().min(1),
     submitIcon: z.string().min(1),
   }),
@@ -64,17 +72,17 @@ export const brunchSchema = z.object({
     confirmation: z.string().min(1),
     thankYou: z.string().min(1).default("Thank you for responding!"),
     inviter: z.string().min(1).default("Tanmoy"),
-    fields: z.object({
-      coffee: z.string().min(1),
-      food: z.string().min(1),
-      notes: z.string().min(1),
-      emptyNotes: z.string().min(1),
-    }),
   }),
   footer: z.string().min(1),
 });
 
-export type BrunchContent = z.infer<typeof brunchSchema>;
+type BrunchShell = z.infer<typeof brunchSchema>;
+export type BrunchContent = Omit<BrunchShell, "preferences"> & {
+  preferences: BrunchShell["preferences"] & {
+    questions: z.infer<typeof preferenceQuestionsSchema>["questions"];
+  };
+};
+export type PreferenceQuestion = BrunchContent["preferences"]["questions"][number];
 
 export const inviteesSchema = z.object({
   invitees: z
@@ -89,3 +97,15 @@ export const inviteesSchema = z.object({
 
 export type Invitee = z.infer<typeof inviteesSchema>["invitees"][number];
 export type InviteeContent = z.infer<typeof inviteesSchema>;
+
+export const quizAccessSchema = z.object({
+  users: z.array(
+    z.object({
+      name: z.string().min(1),
+      accessCode: z.string().regex(/^\d{4}$/),
+    }),
+  ).min(1),
+});
+
+export type QuizUser = z.infer<typeof quizAccessSchema>["users"][number];
+export type QuizAccessContent = z.infer<typeof quizAccessSchema>;

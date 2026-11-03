@@ -6,23 +6,43 @@ import type { BrunchContent } from "@/lib/brunch-schema";
 
 type Preferences = BrunchContent["preferences"];
 type ResponseContent = BrunchContent["response"];
+type Answers = Record<string, string | string[]>;
 
 export default function BrunchPreferences({
   content,
   response,
+  initialPopup = null,
+  initialError = "",
   className = "",
 }: {
   content: Preferences;
   response: ResponseContent;
+  initialPopup?: "thank-you" | null;
+  initialError?: string;
   className?: string;
 }) {
-  const [coffee, setCoffee] = useState(content.coffee.default);
-  const [food, setFood] = useState(content.food.default);
-  const [notes, setNotes] = useState("");
-  const [popup, setPopup] = useState<"thank-you" | "declined" | "reconsider" | "final-decline" | null>(null);
+  const [answers, setAnswers] = useState<Answers>(() =>
+    Object.fromEntries(content.questions.map((question) => [
+      question.id,
+      question.type === "multi-select" ? [] : "",
+    ])),
+  );
+  const [popup, setPopup] = useState<"thank-you" | "declined" | "reconsider" | "final-decline" | null>(initialPopup);
   const [declineDisabled, setDeclineDisabled] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
+
+  const updateAnswer = (id: string, value: string | string[]) => {
+    setAnswers((current) => ({ ...current, [id]: value }));
+  };
+
+  const toggleOption = (id: string, value: string) => {
+    const current = answers[id];
+    const selected = Array.isArray(current) ? current : [];
+    updateAnswer(id, selected.includes(value)
+      ? selected.filter((item) => item !== value)
+      : [...selected, value]);
+  };
 
   const submit = async (attending: boolean) => {
     setSaving(true);
@@ -32,13 +52,17 @@ export default function BrunchPreferences({
       const result = await fetch("/api/brunch/responses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ coffee, food, notes, attending }),
+        body: JSON.stringify({ answers, attending }),
       });
 
       if (!result.ok) {
-        throw new Error("Could not save your response");
+        const failure = await result.json().catch(() => null);
+        throw new Error(
+          failure && typeof failure.error === "string"
+            ? failure.error
+            : "Could not save your response",
+        );
       }
-
       setPopup(attending ? "thank-you" : null);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Could not save your response");
@@ -58,29 +82,56 @@ export default function BrunchPreferences({
   };
 
   return (
-    <form className={`${styles.form} ${styles.card} ${className}`} onSubmit={submitForm}>
-      <fieldset>
-        <legend>{content.coffee.label}</legend>
-        {content.coffee.options.map((option) => (
-          <label key={option.value}>
-            <input type="radio" name="coffee" value={option.value} checked={coffee === option.value} onChange={() => setCoffee(option.value)} /> {option.label}
-          </label>
-        ))}
-      </fieldset>
-      <fieldset>
-        <legend>{content.food.label}</legend>
-        {content.food.options.map((option) => (
-          <label key={option.value}>
-            <input type="radio" name="food" value={option.value} checked={food === option.value} onChange={() => setFood(option.value)} /> {option.label}
-          </label>
-        ))}
-      </fieldset>
-      <label className={styles.notes}>
-        {content.notes.label}
-        <input type="text" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder={content.notes.placeholder} />
-      </label>
+    <form className={`${styles.form} ${styles.card} ${className}`} action="/api/brunch/responses" method="post" onSubmit={submitForm}>
+      {content.questions.map((question) => {
+        if (question.type === "input") {
+          return (
+            <label className={styles.notes} key={question.id}>
+              {question.label}
+              <input
+                type="text"
+                name={question.id}
+                value={typeof answers[question.id] === "string" ? answers[question.id] : ""}
+                onChange={(event) => updateAnswer(question.id, event.target.value)}
+                placeholder={question.placeholder}
+              />
+            </label>
+          );
+        }
+
+        const selected = Array.isArray(answers[question.id]) ? answers[question.id] : [];
+        const singleSelected = typeof answers[question.id] === "string" ? answers[question.id] : "";
+        return (
+          <fieldset key={question.id}>
+            <legend>{question.label}</legend>
+            {question.options.map((option) => (
+              <label key={option.value}>
+                {question.type === "multi-select" ? (
+                  <input
+                    type="checkbox"
+                    name={question.id}
+                    value={option.value}
+                    checked={selected.includes(option.value)}
+                    onChange={() => toggleOption(question.id, option.value)}
+                  />
+                ) : (
+                  <input
+                    type="radio"
+                    name={question.id}
+                    value={option.value}
+                    required={question.type === "single-select"}
+                    checked={singleSelected === option.value}
+                    onChange={() => updateAnswer(question.id, option.value)}
+                  />
+                )}{" "}
+                {option.label}
+              </label>
+            ))}
+          </fieldset>
+        );
+      })}
       <div className={styles.responseActions}>
-        <button className={styles.submitButton} type="submit" disabled={saving}>
+        <button className={styles.submitButton} type="submit" name="attending" value="true" disabled={saving}>
           {content.submitLabel} <span aria-hidden="true">{content.submitIcon}</span>
         </button>
         <button

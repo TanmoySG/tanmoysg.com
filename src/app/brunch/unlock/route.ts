@@ -22,9 +22,14 @@ async function unlock(request: Request, pin: string | undefined) {
   }
 
   const response = redirectWithRelativeLocation("/brunch");
-  const cookie = await createBrunchAccessCookie(pin);
+  const cookie = await createBrunchAccessCookie(pin, isSecureRequest(request));
   response.cookies.set(cookie.name, cookie.value, cookie.options);
   return response;
+}
+
+function isSecureRequest(request: Request): boolean {
+  const forwardedProto = request.headers.get("x-forwarded-proto")?.split(",")[0].trim();
+  return (forwardedProto ?? new URL(request.url).protocol.replace(":", "")) === "https";
 }
 
 function redirectWithRelativeLocation(location: string) {

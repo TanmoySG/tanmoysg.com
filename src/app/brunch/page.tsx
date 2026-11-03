@@ -11,9 +11,9 @@ export const metadata = { title: "Brunch at Tanmoy's" };
 export default async function BrunchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; pin?: string; code?: string }>;
+  searchParams: Promise<{ error?: string; pin?: string; code?: string; submitted?: string }>;
 }) {
-  const { error, pin, code } = await searchParams;
+  const { error, pin, code, submitted } = await searchParams;
   const accessCode = pin ?? code;
 
   if (accessCode) {
@@ -57,9 +57,12 @@ export default async function BrunchPage({
   return (
     <main className={`${styles.page} ${styles.invitationPage}`}>
       <section className={styles.card}>
-        <p className={styles.label}>
-          {content.invitation.label} · <span className={styles.inviteeName}>{invitee.name}</span>
-        </p>
+        <div className={styles.invitationHeader}>
+          <p className={styles.label}>
+            {content.invitation.label} · <span className={styles.inviteeName}>{invitee.name}</span>
+          </p>
+          <a className={styles.logoutButton} href="/brunch/reset">log out</a>
+        </div>
         <h1>
           {content.invitation.title.before}{" "}
           <span>{content.invitation.title.connector}</span>
@@ -79,6 +82,8 @@ export default async function BrunchPage({
         <BrunchPreferences
           content={content.preferences}
           response={content.response}
+          initialPopup={submitted === "1" ? "thank-you" : null}
+          initialError={error ? "Could not save your response. Please try again." : ""}
           className={styles.preferences}
         />
       </section>

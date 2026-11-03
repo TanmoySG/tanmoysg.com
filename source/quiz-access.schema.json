@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tanmoysg.com/schemas/quiz-access.schema.json",
+  "title": "Quiz access users",
+  "type": "object",
+  "required": ["users"],
+  "additionalProperties": false,
+  "properties": {
+    "users": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "accessCode"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "accessCode": { "type": "string", "pattern": "^[0-9]{4}$" }
+        }
+      }
+    }
+  }
+}

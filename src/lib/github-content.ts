@@ -3,9 +3,12 @@ import "server-only";
 import {
   brunchSchema,
   inviteesSchema,
+  preferenceQuestionsSchema,
+  quizAccessSchema,
   type BrunchContent,
   type Invitee,
   type InviteeContent,
+  type QuizAccessContent,
 } from "./brunch-schema";
 
 const revalidateSeconds = 60;
@@ -90,15 +93,32 @@ async function getGitHubJson(pathEnvironmentVariable: string, defaultPath?: stri
 }
 
 export async function getBrunchContent(): Promise<BrunchContent> {
-  const result = brunchSchema.safeParse(await getGitHubJson("GITHUB_CONTENT_PATH"));
+  const [brunchResult, questionsResult] = await Promise.all([
+    getGitHubJson("GITHUB_CONTENT_PATH"),
+    getGitHubJson("GITHUB_PREFERENCES_PATH", "source/preferences.json"),
+  ]);
+  const result = brunchSchema.safeParse(brunchResult);
+  const questions = preferenceQuestionsSchema.safeParse(questionsResult);
   if (!result.success) {
     const invalidFields = result.error.issues
       .map((issue) => issue.path.join(".") || "root")
       .join(", ");
     throw new Error(`GitHub brunch content failed schema validation: ${invalidFields}`);
   }
+  if (!questions.success) {
+    const invalidFields = questions.error.issues
+      .map((issue) => issue.path.join(".") || "root")
+      .join(", ");
+    throw new Error(`GitHub preference questions failed schema validation: ${invalidFields}`);
+  }
 
-  return result.data;
+  return {
+    ...result.data,
+    preferences: {
+      ...result.data.preferences,
+      questions: questions.data.questions,
+    },
+  };
 }
 
 export async function getInviteeContent(): Promise<InviteeContent> {
@@ -118,4 +138,22 @@ export async function getInviteeContent(): Promise<InviteeContent> {
 export async function getInviteeByAccessCode(accessCode: string): Promise<Invitee | undefined> {
   const { invitees } = await getInviteeContent();
   return invitees.find((invitee) => invitee.accessCode === accessCode);
+}
+
+export async function getQuizAccessContent(): Promise<QuizAccessContent> {
+  const result = quizAccessSchema.safeParse(
+    await getGitHubJson("GITHUB_QUIZ_ACCESS_PATH", "quiz-access.json"),
+  );
+  if (!result.success) {
+    const invalidFields = result.error.issues
+      .map((issue) => issue.path.join(".") || "root")
+      .join(", ");
+    throw new Error(`GitHub quiz access failed schema validation: ${invalidFields}`);
+  }
+  return result.data;
+}
+
+export async function getQuizUserByAccessCode(accessCode: string) {
+  const { users } = await getQuizAccessContent();
+  return users.find((user) => user.accessCode === accessCode);
 }
