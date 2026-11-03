@@ -577,6 +577,13 @@
   }
 
   .headerActions {
+    display: grid;
+    gap: 8px;
     margin-top: 18px;
+  }
+
+  .headerButton {
+    justify-content: center;
+    width: 100%;
   }
 }
