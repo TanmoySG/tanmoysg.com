@@ -47,6 +47,27 @@
   text-transform: uppercase;
 }
 
+.invitationHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logoutButton {
+  padding: 7px 10px;
+  color: var(--ink);
+  border: 1px solid rgba(48, 60, 56, .3);
+  font: 10px "Space Mono", monospace;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.logoutButton:hover {
+  color: var(--paper);
+  background: var(--ink);
+}
+
 .inviteeName {
   color: var(--coral);
   font: inherit;
@@ -195,6 +216,10 @@
   .details {
     flex-wrap: wrap;
     gap: 12px 20px;
+  }
+
+  .invitationHeader {
+    align-items: flex-start;
   }
 
   .menu {

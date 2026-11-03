@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tanmoysg.com/schemas/brunch.schema.json",
+  "title": "Brunch content",
+  "type": "object",
+  "required": ["metadata", "access", "navigation", "invitation", "event", "menu", "preferences", "response", "footer"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["title"],
+      "properties": { "title": { "type": "string", "minLength": 1 } }
+    },
+    "access": {
+      "type": "object",
+      "required": ["pin"],
+      "properties": { "pin": { "type": "string", "pattern": "^[0-9]{4}$" } }
+    },
+    "navigation": {
+      "type": "object",
+      "required": ["homeLabel", "homeHref"],
+      "properties": {
+        "homeLabel": { "type": "string", "minLength": 1 },
+        "homeHref": { "type": "string", "minLength": 1 }
+      }
+    },
+    "invitation": {
+      "type": "object",
+      "required": ["label", "title", "description"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "title": {
+          "type": "object",
+          "required": ["before", "connector", "after"],
+          "properties": {
+            "before": { "type": "string", "minLength": 1 },
+            "connector": { "type": "string", "minLength": 1 },
+            "after": { "type": "string", "minLength": 1 }
+          }
+        },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": ["when", "where"],
+      "properties": {
+        "when": { "$ref": "#/$defs/labeledValue" },
+        "where": { "$ref": "#/$defs/labeledValue" }
+      }
+    },
+    "menu": {
+      "type": "object",
+      "required": ["label", "description"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "required": ["submitLabel", "submitIcon"],
+      "properties": {
+        "submitLabel": { "type": "string", "minLength": 1 },
+        "submitIcon": { "type": "string", "minLength": 1 }
+      }
+    },
+    "response": {
+      "type": "object",
+      "required": ["greeting", "confirmation", "thankYou", "inviter"],
+      "properties": {
+        "greeting": { "type": "string", "minLength": 1 },
+        "confirmation": { "type": "string", "minLength": 1 },
+        "thankYou": { "type": "string", "minLength": 1 },
+        "inviter": { "type": "string", "minLength": 1 }
+      }
+    },
+    "footer": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "labeledValue": {
+      "type": "object",
+      "required": ["label", "value"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "preferenceOption": {
+      "type": "object",
+      "required": ["value", "label"],
+      "properties": {
+        "value": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 }
+      }
+    },
+    "preferenceQuestion": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["id", "type", "label"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+            "type": { "const": "input" },
+            "label": { "type": "string", "minLength": 1 },
+            "placeholder": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["id", "type", "label", "options"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+            "type": { "enum": ["single-select", "multi-select"] },
+            "label": { "type": "string", "minLength": 1 },
+            "options": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/preferenceOption" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

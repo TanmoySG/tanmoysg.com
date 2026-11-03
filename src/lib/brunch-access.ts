@@ -11,7 +11,11 @@ const accessCookieValue = "granted";
 export { accessCookieName };
 
 function getAccessToken(pin: string): string {
-  return createHmac("sha256", pin).update(accessCookieValue).digest("hex");
+  const secret = process.env.BRUNCH_ACCESS_COOKIE_SECRET;
+  if (!secret) {
+    throw new Error("Missing required environment variable: BRUNCH_ACCESS_COOKIE_SECRET");
+  }
+  return createHmac("sha256", secret).update(`${accessCookieValue}:${pin}`).digest("hex");
 }
 
 function valuesMatch(expected: string, actual: string | undefined): boolean {
@@ -34,13 +38,13 @@ export async function isValidBrunchPin(pin: string): Promise<boolean> {
   return Boolean(await getInviteeByAccessCode(pin));
 }
 
-export async function createBrunchAccessCookie(pin: string) {
+export async function createBrunchAccessCookie(pin: string, secure = process.env.NODE_ENV === "production") {
   return {
     name: accessCookieName,
     value: getAccessToken(pin),
     options: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure,
       sameSite: "strict" as const,
       path: "/",
       maxAge: 60 * 60 * 24 * 30,

@@ -10,13 +10,16 @@
   text-transform: uppercase;
 }
 
-.form.card input[type="radio"] {
+.form.card input[type="radio"],
+.form.card input[type="checkbox"] {
   width: 12px;
   height: 12px;
-  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border: 1px solid var(--ink, #303c38);
+  background: transparent;
 }
 
-.form.card input[type="radio"]:checked {
+.form.card input[type="radio"]:checked,
+.form.card input[type="checkbox"]:checked {
   border: 3px solid var(--paper, #f7f4ed);
   background: var(--accent, #bf725d);
   box-shadow: 0 0 0 1px var(--accent, #bf725d);
@@ -68,17 +71,20 @@
   font-size: 14px;
 }
 
-.form input[type="radio"] {
+.form input[type="radio"],
+.form input[type="checkbox"] {
   width: 17px;
   height: 17px;
   margin: 0;
   appearance: none;
-  border: 1.5px solid color-mix(in srgb, currentColor 60%, transparent);
+  border: 1.5px solid var(--ink, #303c38);
+  background: transparent;
   border-radius: 50%;
   cursor: pointer;
 }
 
-.form input[type="radio"]:checked {
+.form input[type="radio"]:checked,
+.form input[type="checkbox"]:checked {
   border: 5px solid var(--accent, #bf725d);
 }
 
@@ -129,6 +135,7 @@
   font: 13px "DM Mono", monospace;
   text-transform: uppercase;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .responseActions {
@@ -148,6 +155,7 @@
   font: 13px "DM Mono", monospace;
   text-transform: uppercase;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .declineButton:hover {
@@ -239,6 +247,7 @@
 }
 
 .successPopup button {
+  min-height: 44px;
   padding: 10px 18px;
   color: var(--paper, #f7f4ed);
   background: var(--ink, #303c38);
@@ -246,6 +255,7 @@
   font: 12px "Space Mono", monospace;
   text-transform: uppercase;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .successPopup button:hover {
@@ -293,5 +303,17 @@
   .notes,
   .responseActions {
     grid-column: auto;
+  }
+
+  .responseActions > button {
+    width: 100%;
+  }
+
+  .popupActions {
+    flex-direction: column;
+  }
+
+  .popupActions button {
+    width: 100%;
   }
 }
