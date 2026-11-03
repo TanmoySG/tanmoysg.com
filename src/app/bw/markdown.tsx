@@ -27,7 +27,9 @@ export default function Markdown({ source }: { source: string }) {
         if (lines.every((line) => /^[-*]\s+/.test(line))) {
           return (
             <ul key={index}>
-              {lines.map((line) => <li key={line}>{inlineMarkdown(line.replace(/^[-*]\s+/, ""))}</li>)}
+              {lines.map((line, lineIndex) => (
+                <li key={`${index}-${lineIndex}`}>{inlineMarkdown(line.replace(/^[-*]\s+/, ""))}</li>
+              ))}
             </ul>
           );
         }

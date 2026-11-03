@@ -43,6 +43,8 @@ export default async function QuizPage({
           <div><p className={styles.label}>quiz workspace · {user.name}</p><h1 className={styles.title}>quiz <span className={styles.titleAccent}>questions</span></h1></div>
           <div className={styles.headerActions}>
             <a className={styles.headerButton} href="/bw">refresh</a>
+            <a className={styles.headerButton} href="/bw/finalize">finalize</a>
+            <a className={styles.headerButton} href="/bw/finalized">finalized</a>
             <a className={styles.headerButton} href="/bw/logout">log out</a>
           </div>
         </div>

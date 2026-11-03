@@ -109,3 +109,9 @@ export const quizAccessSchema = z.object({
 
 export type QuizUser = z.infer<typeof quizAccessSchema>["users"][number];
 export type QuizAccessContent = z.infer<typeof quizAccessSchema>;
+
+export const quizRoundsSchema = z.object({
+  rounds: z.array(z.string().trim().min(1)).min(1),
+});
+
+export type QuizRoundsContent = z.infer<typeof quizRoundsSchema>;
