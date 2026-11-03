@@ -1,6 +1,13 @@
-import { faSquareMinus, faSquarePlus } from "@fortawesome/free-regular-svg-icons";
+import {
+  faArrowAltCircleRight,
+  faCheckCircle,
+  faCircleRight,
+  faCircleXmark,
+  faFlag,
+  faSquareMinus,
+  faSquarePlus,
+} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleRight } from "@fortawesome/free-regular-svg-icons";
 import { getAuthenticatedQuizUser } from "@/lib/quiz-access";
 import { getQuizIssues } from "@/lib/quiz-issues";
 import QuizForm from "./quiz-form";
@@ -42,8 +49,18 @@ export default async function QuizPage({
         <div className={styles.header}>
           <div><p className={styles.label}>quiz workspace · {user.name}</p><h1 className={styles.title}>quiz <span className={styles.titleAccent}>questions</span></h1></div>
           <div className={styles.headerActions}>
-            <a className={styles.headerButton} href="/bw">refresh</a>
-            <a className={styles.headerButton} href="/bw/logout">log out</a>
+            <a className={styles.headerButton} href="/bw">
+              <FontAwesomeIcon icon={faCircleRight} aria-hidden="true" /> refresh
+            </a>
+            <a className={styles.headerButton} href="/bw/finalize">
+              <FontAwesomeIcon icon={faFlag} aria-hidden="true" /> finalize
+            </a>
+            <a className={styles.headerButton} href="/bw/finalized">
+              <FontAwesomeIcon icon={faCheckCircle} aria-hidden="true" /> finalized
+            </a>
+            <a className={styles.headerButton} href="/bw/logout">
+              <FontAwesomeIcon icon={faCircleXmark} aria-hidden="true" /> log out
+            </a>
           </div>
         </div>
         <div className={styles.panels}>

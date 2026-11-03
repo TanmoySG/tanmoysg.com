@@ -9,6 +9,8 @@ import {
   type Invitee,
   type InviteeContent,
   type QuizAccessContent,
+  quizRoundsSchema,
+  type QuizRoundsContent,
 } from "./brunch-schema";
 
 const revalidateSeconds = 60;
@@ -149,6 +151,20 @@ export async function getQuizAccessContent(): Promise<QuizAccessContent> {
       .map((issue) => issue.path.join(".") || "root")
       .join(", ");
     throw new Error(`GitHub quiz access failed schema validation: ${invalidFields}`);
+  }
+
+  return result.data;
+}
+
+export async function getQuizRoundsContent(): Promise<QuizRoundsContent> {
+  const result = quizRoundsSchema.safeParse(
+    await getGitHubJson("GITHUB_QUIZ_ROUNDS_PATH", "quiz-rounds.json"),
+  );
+  if (!result.success) {
+    const invalidFields = result.error.issues
+      .map((issue) => issue.path.join(".") || "root")
+      .join(", ");
+    throw new Error(`GitHub quiz rounds failed schema validation: ${invalidFields}`);
   }
   return result.data;
 }

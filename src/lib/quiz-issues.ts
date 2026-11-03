@@ -1,6 +1,7 @@
 import "server-only";
 
 export const quizLabel = "quiz-question";
+export const finalizedQuizLabel = "finalized";
 
 type GitHubIssue = {
   number: number;
@@ -9,6 +10,19 @@ type GitHubIssue = {
   html_url?: string;
   labels?: Array<{ name?: string }>;
   pull_request?: unknown;
+};
+
+export type FinalizationDetails = {
+  proposedRound: string;
+  theme: string;
+  notes: string;
+  finalizedBy: string;
+  finalizedAt: string;
+  commentBody: string;
+};
+
+export type FinalizedQuizIssue = GitHubIssue & {
+  finalization: FinalizationDetails;
 };
 
 function required(name: string): string {
@@ -34,8 +48,17 @@ function headers(): HeadersInit {
   };
 }
 
+function additionalQuizLabel(): string | undefined {
+  const label = process.env.QUIZ_ISSUE_ADDITIONAL_TAG?.trim();
+  return label || undefined;
+}
+
+function quizLabels(): string[] {
+  return [quizLabel, additionalQuizLabel()].filter((label): label is string => Boolean(label));
+}
+
 export async function getQuizIssues(): Promise<GitHubIssue[]> {
-  const response = await fetch(`${repositoryUrl()}?state=open&labels=${encodeURIComponent(quizLabel)}&per_page=100`, {
+  const response = await fetch(`${repositoryUrl()}?state=open&labels=${encodeURIComponent(quizLabels().join(","))}&per_page=100`, {
     headers: headers(),
     cache: "no-store",
   });
@@ -47,6 +70,56 @@ export async function getQuizIssues(): Promise<GitHubIssue[]> {
         "number" in issue && "title" in issue && !("pull_request" in issue)
       ))
     : [];
+}
+
+export async function getFinalizedQuizIssues(): Promise<FinalizedQuizIssue[]> {
+  const labels = [...quizLabels(), finalizedQuizLabel];
+  const response = await fetch(`${repositoryUrl()}?state=all&labels=${encodeURIComponent(labels.join(","))}&per_page=100`, {
+    headers: headers(),
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error(`Finalized quiz issues request failed (${response.status})`);
+  const issues = (await response.json()) as unknown;
+  const finalizedIssues = Array.isArray(issues)
+    ? issues.filter((issue): issue is GitHubIssue => (
+        typeof issue === "object" && issue !== null &&
+        "number" in issue && "title" in issue && !("pull_request" in issue)
+      ))
+    : [];
+  return Promise.all(finalizedIssues.map(async (issue): Promise<FinalizedQuizIssue> => {
+    const commentsResponse = await fetch(repositoryUrl(`issues/${issue.number}/comments?per_page=100`), {
+      headers: headers(),
+      cache: "no-store",
+    });
+    if (!commentsResponse.ok) {
+      throw new Error(`Finalized quiz comments request failed (${commentsResponse.status})`);
+    }
+    const comments = (await commentsResponse.json()) as Array<{
+      body?: string | null;
+      created_at?: string;
+    }>;
+    const comment = comments.find((entry) => entry.body?.includes("## Quiz question finalized"));
+    if (!comment?.body) {
+      throw new Error(`Finalization details are missing for quiz issue ${issue.number}`);
+    }
+    const match = comment.body.match(
+      /- \*\*Proposed round:\*\* (.+)\n- \*\*Theme:\*\* (.+)\n- \*\*Notes:\*\* ([\s\S]*?)\n\nFinalized by: (.+)\nFinalized: (.+)/,
+    );
+    if (!match) {
+      throw new Error(`Finalization details are invalid for quiz issue ${issue.number}`);
+    }
+    return {
+      ...issue,
+      finalization: {
+        proposedRound: match[1].trim(),
+        theme: match[2].trim(),
+        notes: match[3].trim(),
+        finalizedBy: match[4].trim(),
+        finalizedAt: match[5].trim(),
+        commentBody: comment.body,
+      },
+    };
+  }));
 }
 
 export async function createQuizIssue(
@@ -74,13 +147,87 @@ export async function createQuizIssue(
         "",
         `Submitted: ${new Date().toISOString()}`,
       ].join("\n\n"),
-      labels: [quizLabel],
+      labels: quizLabels(),
     }),
   });
   if (!response.ok) {
     const message = await response.text();
     console.error("Could not create quiz issue", { status: response.status, body: message });
     throw new Error("Could not save quiz question");
+  }
+}
+
+export async function finalizeQuizIssue(
+  issueNumber: number,
+  details: { proposedRound: string; theme: string; notes: string },
+  finalizedBy: string,
+) {
+  const issueResponse = await fetch(repositoryUrl(`issues/${issueNumber}`), {
+    headers: headers(),
+    cache: "no-store",
+  });
+  if (!issueResponse.ok) throw new Error("Could not load quiz question");
+
+  const issue = (await issueResponse.json()) as GitHubIssue;
+  const labels = (issue.labels ?? [])
+    .map((label) => label.name)
+    .filter((label): label is string => Boolean(label));
+  if (!quizLabels().every((label) => labels.includes(label))) {
+    throw new Error("Question is not part of the quiz workspace");
+  }
+  if (labels.includes(finalizedQuizLabel)) {
+    throw new Error("Question has already been finalized");
+  }
+  if (!labels.includes(details.proposedRound)) {
+    labels.push(details.proposedRound);
+  }
+  labels.push(finalizedQuizLabel);
+
+  const labelResponse = await fetch(repositoryUrl(`issues/${issueNumber}`), {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify({ labels }),
+  });
+  if (!labelResponse.ok) {
+    const message = await labelResponse.text();
+    console.error("Could not finalize quiz issue labels", { status: labelResponse.status, body: message });
+    throw new Error("Could not finalize quiz question");
+  }
+
+  const commentResponse = await fetch(repositoryUrl(`issues/${issueNumber}/comments`), {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({
+      body: [
+        "## Quiz question finalized",
+        "",
+        `- **Proposed round:** ${details.proposedRound}`,
+        `- **Theme:** ${details.theme}`,
+        `- **Notes:** ${details.notes || "None"}`,
+        "",
+        `Finalized by: ${finalizedBy}`,
+        `Finalized: ${new Date().toISOString()}`,
+      ].join("\n"),
+    }),
+  });
+  if (!commentResponse.ok) {
+    const message = await commentResponse.text();
+    console.error("Could not add quiz finalization comment", { status: commentResponse.status, body: message });
+    throw new Error("Question was tagged but finalization details could not be saved");
+  }
+}
+
+export async function finalizeQuizIssues(
+  finalizations: Array<{
+    issueNumber: number;
+    proposedRound: string;
+    theme: string;
+    notes: string;
+  }>,
+  finalizedBy: string,
+) {
+  for (const finalization of finalizations) {
+    await finalizeQuizIssue(finalization.issueNumber, finalization, finalizedBy);
   }
 }
 
