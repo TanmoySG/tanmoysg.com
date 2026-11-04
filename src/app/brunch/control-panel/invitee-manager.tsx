@@ -11,6 +11,38 @@ export default function InviteeManager({ initialInvitees }: { initialInvitees: I
   const [accessCode, setAccessCode] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [copiedCode, setCopiedCode] = useState("");
+
+  const accessPath = (code: string) => `/brunch?pin=${encodeURIComponent(code)}`;
+
+  const copyText = async (value: string) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.select();
+    const copied = document.execCommand("copy");
+    textArea.remove();
+    if (!copied) throw new Error("Copy command was rejected");
+  };
+
+  const copyAccessLink = async (code: string) => {
+    try {
+      const inviteeLink = new URL(accessPath(code), window.location.origin).toString();
+      await copyText(inviteeLink);
+      setCopiedCode(code);
+      window.setTimeout(() => setCopiedCode((current) => current === code ? "" : current), 1800);
+    } catch {
+      setError("Could not copy access link");
+    }
+  };
 
   const add = async (event: FormEvent) => {
     event.preventDefault();
@@ -63,13 +95,26 @@ export default function InviteeManager({ initialInvitees }: { initialInvitees: I
         <button className={styles.button} type="submit" disabled={saving}>add invitee</button>
       </form>
       {error && <p className={styles.error} role="alert">{error}</p>}
-      <div className={styles.invitees}>
+      <div className={styles.inviteeTableWrap}>
+        <table className={styles.inviteeTable}>
+          <thead>
+            <tr><th>Name</th><th>Access code</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
         {invitees.map((invitee) => (
-          <div className={styles.invitee} key={invitee.accessCode}>
-            <span>{invitee.name} <small>({invitee.accessCode})</small></span>
-            <button className={styles.removeButton} type="button" disabled={saving} onClick={() => void remove(invitee.accessCode)}>remove</button>
-          </div>
+          <tr key={invitee.accessCode}>
+            <td>{invitee.name}</td>
+            <td><small>{invitee.accessCode}</small></td>
+            <td className={styles.inviteeActions}>
+              <button className={styles.copyButton} type="button" disabled={saving} onClick={() => void copyAccessLink(invitee.accessCode)}>
+                {copiedCode === invitee.accessCode ? "copied" : "copy link"}
+              </button>
+              <button className={styles.removeButton} type="button" disabled={saving} onClick={() => void remove(invitee.accessCode)}>remove</button>
+            </td>
+          </tr>
         ))}
+          </tbody>
+        </table>
       </div>
     </section>
   );

@@ -263,23 +263,66 @@
   opacity: 1;
 }
 
-.invitees {
-  display: grid;
+.inviteeTableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.inviteeTable {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.inviteeTable th,
+.inviteeTable td {
+  padding: 10px;
+  border-top: 1px solid rgba(48, 60, 56, .12);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.inviteeTable th:last-child,
+.inviteeTable td:last-child {
+  text-align: right;
+}
+
+.inviteeTable th:nth-child(2),
+.inviteeTable td:nth-child(2) {
+  text-align: center;
+}
+
+.inviteeTable th {
+  color: #bf725d;
+  font: 10px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.inviteeTable small {
+  color: #69736e;
+  font: 11px "DM Mono", monospace;
+}
+
+.inviteeActions {
+  display: flex;
+  justify-content: flex-end;
   gap: 8px;
 }
 
-.invitee {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(48, 60, 56, .12);
+.copyButton {
+  padding: 7px 10px;
+  color: #303c38;
+  background: transparent;
+  border: 1px solid rgba(48, 60, 56, .3);
+  font: 10px "Space Mono", monospace;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
-.invitee small {
-  color: #69736e;
-  font: 11px "DM Mono", monospace;
+.copyButton:hover {
+  color: #f7f4ed;
+  background: #303c38;
 }
 
 .removeButton {
