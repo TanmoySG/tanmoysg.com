@@ -1,19 +1,37 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 type Invitee = { name: string; accessCode: string };
 
-export default function InviteeManager({ initialInvitees }: { initialInvitees: Invitee[] }) {
+export default function InviteeManager({
+  initialInvitees,
+  inviteTemplate,
+}: {
+  initialInvitees: Invitee[];
+  inviteTemplate: string;
+}) {
   const [invitees, setInvitees] = useState(initialInvitees);
   const [name, setName] = useState("");
   const [accessCode, setAccessCode] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [copiedCode, setCopiedCode] = useState("");
+  const [inviteMessage, setInviteMessage] = useState<{ name: string; link: string; message: string } | null>(null);
+  const [copiedMessage, setCopiedMessage] = useState(false);
 
   const accessPath = (code: string) => `/brunch?pin=${encodeURIComponent(code)}`;
+
+  useEffect(() => {
+    if (!inviteMessage) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setInviteMessage(null);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [inviteMessage]);
 
   const copyText = async (value: string) => {
     if (navigator.clipboard?.writeText) {
@@ -41,6 +59,26 @@ export default function InviteeManager({ initialInvitees }: { initialInvitees: I
       window.setTimeout(() => setCopiedCode((current) => current === code ? "" : current), 1800);
     } catch {
       setError("Could not copy access link");
+    }
+  };
+
+  const openInviteMessage = (invitee: Invitee) => {
+    const link = new URL(accessPath(invitee.accessCode), window.location.origin).toString();
+    const message = inviteTemplate
+      .replace(/\{\{\s*url\s*\}\}|\{\s*url\s*\}|\[\s*url\s*\]/gi, link)
+      .replace(/\{\{\s*name\s*\}\}|\{\s*name\s*\}|\[\s*name\s*\]/gi, invitee.name);
+    setCopiedMessage(false);
+    setInviteMessage({ name: invitee.name, link, message });
+  };
+
+  const copyInviteMessage = async () => {
+    if (!inviteMessage) return;
+    try {
+      await copyText(inviteMessage.message);
+      setCopiedMessage(true);
+      window.setTimeout(() => setCopiedMessage(false), 1800);
+    } catch {
+      setError("Could not copy invite message");
     }
   };
 
@@ -109,6 +147,9 @@ export default function InviteeManager({ initialInvitees }: { initialInvitees: I
               <button className={styles.copyButton} type="button" disabled={saving} onClick={() => void copyAccessLink(invitee.accessCode)}>
                 {copiedCode === invitee.accessCode ? "copied" : "copy link"}
               </button>
+              <button className={styles.copyButton} type="button" disabled={saving} onClick={() => openInviteMessage(invitee)}>
+                invite message
+              </button>
               <button className={styles.removeButton} type="button" disabled={saving} onClick={() => void remove(invitee.accessCode)}>remove</button>
             </td>
           </tr>
@@ -116,6 +157,30 @@ export default function InviteeManager({ initialInvitees }: { initialInvitees: I
           </tbody>
         </table>
       </div>
+      {inviteMessage && (
+        <div className={styles.modalBackdrop} role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setInviteMessage(null);
+        }}>
+          <section className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="invite-message-title">
+            <div className={styles.modalHeader}>
+              <div>
+                <p className={styles.label}>invite message</p>
+                <h2 id="invite-message-title">for <span>{inviteMessage.name}</span></h2>
+              </div>
+              <button className={styles.modalClose} type="button" onClick={() => setInviteMessage(null)} aria-label="Close invite message">×</button>
+            </div>
+            <label className={styles.modalLabel} htmlFor="invite-message">message</label>
+            <textarea id="invite-message" className={styles.messageText} value={inviteMessage.message} readOnly />
+            <p className={styles.modalLink}><strong>link</strong> {inviteMessage.link}</p>
+            <div className={styles.modalActions}>
+              <button className={styles.button} type="button" onClick={() => void copyInviteMessage()}>
+                {copiedMessage ? "copied" : "copy message"}
+              </button>
+              <button className={styles.copyButton} type="button" onClick={() => setInviteMessage(null)}>close</button>
+            </div>
+          </section>
+        </div>
+      )}
     </section>
   );
 }

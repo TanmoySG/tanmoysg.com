@@ -325,6 +325,93 @@
   background: #303c38;
 }
 
+.modalBackdrop {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(48, 60, 56, .42);
+}
+
+.modal {
+  width: min(620px, 100%);
+  padding: 28px;
+  background: #f7f4ed;
+  border: 1px solid #d9ded6;
+  box-shadow: 8px 9px 0 rgba(48, 60, 56, .16);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.modal h2 {
+  margin: 0;
+  color: #303c38;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -.05em;
+}
+
+.modal h2 span {
+  color: #bf725d;
+}
+
+.modalClose {
+  padding: 0 4px;
+  color: #303c38;
+  background: transparent;
+  border: 0;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modalLabel {
+  display: block;
+  margin: 24px 0 8px;
+  color: #69736e;
+  font: 10px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.messageText {
+  display: block;
+  width: 100%;
+  min-height: 190px;
+  padding: 12px;
+  resize: vertical;
+  color: #303c38;
+  background: transparent;
+  border: 1px solid rgba(48, 60, 56, .3);
+  font: 14px/1.5 "DM Sans", sans-serif;
+}
+
+.modalLink {
+  overflow-wrap: anywhere;
+  margin: 14px 0 0;
+  color: #69736e;
+  font-size: 12px;
+}
+
+.modalLink strong {
+  color: #bf725d;
+  font: 10px "Space Mono", monospace;
+  text-transform: uppercase;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
 .removeButton {
   padding: 7px 10px;
   color: #a9473d;
