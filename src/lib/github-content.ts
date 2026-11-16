@@ -94,6 +94,39 @@ async function getGitHubJson(pathEnvironmentVariable: string, defaultPath?: stri
   }
 }
 
+async function getGitHubText(pathEnvironmentVariable: string, defaultPath?: string): Promise<string> {
+  const token = getRequiredEnvironmentVariable("GITHUB_CONTENT_TOKEN");
+  const response = await fetch(getGitHubFileUrl(pathEnvironmentVariable, defaultPath), {
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    next: {
+      revalidate: revalidateSeconds,
+    },
+  });
+
+  let payload: GitHubFileResponse;
+  try {
+    payload = (await response.json()) as GitHubFileResponse;
+  } catch {
+    throw new Error(`GitHub returned an invalid response (${response.status})`);
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub content request failed (${response.status}): ${payload.message ?? "unknown error"}`,
+    );
+  }
+
+  if (payload.type !== "file" || !payload.content || payload.encoding !== "base64") {
+    throw new Error("Configured GitHub content path is not a Base64-encoded file");
+  }
+
+  return decodeGitHubContent(payload.content);
+}
+
 export async function getBrunchContent(): Promise<BrunchContent> {
   const [brunchResult, questionsResult] = await Promise.all([
     getGitHubJson("GITHUB_CONTENT_PATH"),
@@ -140,6 +173,10 @@ export async function getInviteeContent(): Promise<InviteeContent> {
 export async function getInviteeByAccessCode(accessCode: string): Promise<Invitee | undefined> {
   const { invitees } = await getInviteeContent();
   return invitees.find((invitee) => invitee.accessCode === accessCode);
+}
+
+export async function getInviteTemplate(): Promise<string> {
+  return getGitHubText("GITHUB_INVITE_TEMPLATE_PATH", "source/invite-template.txt");
 }
 
 export async function getQuizAccessContent(): Promise<QuizAccessContent> {
